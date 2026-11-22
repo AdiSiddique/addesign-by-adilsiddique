@@ -1,0 +1,20 @@
+{
+  "framework": null,
+  "buildCommand": null,
+  "installCommand": "npm install",
+  "outputDirectory": "public",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+
+    { "source": "/data/latest.json", "destination": "/api/data?mode=latest" },
+    { "source": "/data/:cat.json", "destination": "/api/data?mode=cat&cat=:cat" },
+    { "source": "/data/items/:cat/:id.json", "destination": "/api/data?mode=item&cat=:cat&id=:id" },
+
+    { "source": "/:cat(illustrations|freepik|adobe-stock|shutterstock|pinterest|clients|premium)", "destination": "/api/page?mode=gallery&cat=:cat" },
+    { "source": "/:cat(illustrations|freepik|adobe-stock|shutterstock|pinterest|clients|premium)/:id", "destination": "/api/page?mode=item&cat=:cat&id=:id" }
+  ],
+  "headers": [
+    { "source": "/media/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] }
+  ]
+}

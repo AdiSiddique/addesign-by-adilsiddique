@@ -1,0 +1,19 @@
+{
+  "name": "addesign-site",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "generate": "node build.js",
+    "dev": "node build.js && npx serve public",
+    "go": "node build.js && vercel --prod",
+    "db:migrate": "node scripts/migrate-content-to-db.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.1",
+    "@vercel/blob": "^2.9.0",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5"
+  }
+}

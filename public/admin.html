@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>addesign — Studio Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F3EC;--surface:#FFFFFF;--surface-2:#EFEAE0;--border:#DDD6C7;--ink:#201C16;--muted:#716A5C;
+    --gold:#9C7A24;--green:#3E7A52;--red:#A84A3D;--radius:10px;color-scheme:light;
+    box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --bg:#121009;--surface:#1A1712;--surface-2:#211D16;--border:#332E24;--ink:#F2ECE1;--muted:#9A9184;
+    --gold:#D4A43A;--green:#4C9A6A;--red:#C96352;color-scheme:dark; } }
+  html,body{height:100%;} *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;}
+  h1,h2,h3{font-family:"Fraunces",serif;font-weight:600;margin:0;}
+  a{color:inherit;}
+  .shell{display:flex;min-height:100%;}
+  .nav{width:220px;flex:none;background:var(--surface);border-right:1px solid var(--border);padding:22px 14px;position:sticky;top:0;height:100vh;overflow-y:auto;}
+  .brand{font-size:20px;padding:0 8px 22px;} .brand span{color:var(--gold);}
+  .navlink{display:block;padding:9px 10px;border-radius:7px;color:var(--muted);text-decoration:none;font-size:14px;margin-bottom:2px;}
+  .navlink.active{background:var(--surface-2);color:var(--ink);} .navlink:hover{color:var(--ink);}
+  .signout{display:block;padding:9px 10px;color:var(--muted);background:none;border:0;font:inherit;font-size:14px;cursor:pointer;width:100%;text-align:left;border-radius:7px;}
+  .signout:hover{color:var(--red);}
+  .main{flex:1;min-width:0;padding:26px 30px 60px;max-width:1040px;}
+  .pagehead{margin-bottom:22px;} .pagehead p{color:var(--muted);margin:6px 0 0;font-size:14px;}
+  .row{display:flex;gap:16px;flex-wrap:wrap;}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;flex:1;min-width:140px;}
+  .stat .n{font-family:"Fraunces",serif;font-size:28px;font-weight:600;} .stat .l{color:var(--muted);font-size:13px;margin-top:2px;}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-top:20px;overflow:hidden;}
+  .panel h3{padding:16px 18px;border-bottom:1px solid var(--border);font-size:16px;}
+  .activity{padding:4px 18px;} .activity .item{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);font-size:14px;}
+  .activity .item:last-child{border-bottom:none;} .activity .t{color:var(--muted);font-size:13px;}
+  .toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+  input[type=text],input[type=search],input[type=password],input[type=date],select,textarea{background:var(--surface-2);border:1px solid var(--border);color:var(--ink);border-radius:7px;padding:8px 10px;font:inherit;width:100%;}
+  textarea{resize:vertical;min-height:70px;}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th{text-align:left;color:var(--muted);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.04em;padding:10px 14px;border-bottom:1px solid var(--border);}
+  td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle;} tr:last-child td{border-bottom:none;}
+  .badge{display:inline-block;padding:3px 9px;border-radius:99px;font-size:12px;font-weight:600;}
+  .badge.published{background:color-mix(in srgb, var(--green) 20%, transparent);color:var(--green);}
+  .badge.pending{background:color-mix(in srgb, var(--gold) 20%, transparent);color:var(--gold);}
+  .badge.rejected{background:color-mix(in srgb, var(--red) 20%, transparent);color:var(--red);}
+  .iconbtn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:5px 9px;font:inherit;font-size:12px;cursor:pointer;margin-left:4px;}
+  .iconbtn:hover{color:var(--ink);border-color:var(--ink);}
+  .btnrow{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;}
+  .primary{background:var(--gold);color:var(--bg);border:none;border-radius:7px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer;}
+  .primary:disabled{opacity:.5;cursor:default;}
+  .secondary{background:none;border:1px solid var(--border);color:var(--ink);border-radius:7px;padding:9px 16px;font:inherit;cursor:pointer;}
+  .catgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+  .cat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
+  .cat h4{margin:0 0 4px;font-size:15px;font-weight:600;} .cat .l{color:var(--muted);font-size:13px;}
+  .switch{position:relative;width:38px;height:21px;flex:none;} .switch input{opacity:0;width:0;height:0;}
+  .slider{position:absolute;inset:0;background:var(--border);border-radius:99px;cursor:pointer;transition:.15s;}
+  .slider::before{content:"";position:absolute;width:16px;height:16px;left:2.5px;top:2.5px;background:var(--surface);border-radius:50%;transition:.15s;}
+  input:checked + .slider{background:var(--gold);} input:checked + .slider::before{transform:translateX(17px);}
+  .cathead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .field{margin-bottom:14px;} .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:5px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;} .grid3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;}
+  @media (max-width:680px){.grid2,.grid3{grid-template-columns:1fr;}}
+  .drop{border:1.5px dashed var(--border);border-radius:var(--radius);padding:22px;text-align:center;color:var(--muted);cursor:pointer;}
+  .drop:hover{border-color:var(--gold);color:var(--ink);}
+  .thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+  .thumb{position:relative;width:84px;height:84px;border-radius:7px;overflow:hidden;background:var(--surface-2);border:1px solid var(--border);}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .thumb button{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:4px;width:18px;height:18px;font-size:12px;line-height:1;cursor:pointer;}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:8px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20;max-width:90vw;text-align:center;}
+  .toast.show{opacity:1;}
+  .menubtn{display:none;background:none;border:1px solid var(--border);border-radius:7px;padding:7px 10px;color:var(--ink);font:inherit;margin-bottom:14px;}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+  .loginwrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .loginbox{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:30px;width:100%;max-width:340px;}
+  .loginbox h1{font-size:22px;margin-bottom:4px;} .loginbox p{color:var(--muted);font-size:13px;margin:0 0 18px;}
+  .err{color:var(--red);font-size:13px;margin-top:8px;}
+  @media (max-width:760px){
+    .nav{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);transition:.18s;z-index:15;}
+    .nav.open{transform:translateX(0);box-shadow:0 0 0 2000px rgba(0,0,0,.35);}
+    .menubtn{display:inline-block;} .main{padding:18px 16px 50px;} table{display:block;overflow-x:auto;}
+  }
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div id="root"></div>
+<script>
+const CATS_FALLBACK = {
+  'illustrations':'Illustrations','freepik':'Magnific (Freepik)','adobe-stock':'Adobe Stock',
+  'shutterstock':'Shutterstock','pinterest':'Pinterest','clients':'Client Projects','premium':'Premium'
+};
+let CATS = CATS_FALLBACK;
+let currentItems = [];
+let editing = null;        // item being edited, or null for "new"
+let formImages = [];       // [{t,f,w,h}] attached to the open form
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toast._h); toast._h=setTimeout(()=>t.classList.remove('show'),2200);
+}
+async function api(path, opts){
+  const res = await fetch(path, Object.assign({credentials:'same-origin', headers:{'Content-Type':'application/json'}}, opts||{}));
+  let data = null; try{ data = await res.json(); }catch(e){}
+  if(!res.ok) throw new Error((data && data.error) || ('Request failed (' + res.status + ')'));
+  return data;
+}
+
+/* ---------- boot / routing ---------- */
+async function boot(){
+  const session = await api('/api/auth?action=session').catch(()=>({loggedIn:false}));
+  if(!session.loggedIn){ renderLogin(); return; }
+  renderShell();
+  window.addEventListener('hashchange', renderView);
+  renderView();
+}
+boot();
+
+function renderLogin(){
+  document.getElementById('root').innerHTML = `
+    <div class="loginwrap"><div class="loginbox">
+      <h1>addesign admin</h1>
+      <p>Sign in to manage your site.</p>
+      <div class="field"><label>Password</label><input type="password" id="pw" autofocus></div>
+      <button class="primary" id="loginbtn" style="width:100%">Sign in</button>
+      <div class="err" id="loginerr" hidden></div>
+    </div></div>`;
+  const go = async () => {
+    const err = document.getElementById('loginerr');
+    err.hidden = true;
+    try{
+      await api('/api/auth?action=login', {method:'POST', body: JSON.stringify({password: document.getElementById('pw').value})});
+      boot();
+    }catch(e){ err.textContent = e.message; err.hidden = false; }
+  };
+  document.getElementById('loginbtn').addEventListener('click', go);
+  document.getElementById('pw').addEventListener('keydown', e=>{ if(e.key==='Enter') go(); });
+}
+
+function renderShell(){
+  document.getElementById('root').innerHTML = `
+    <div class="shell">
+      <nav class="nav" id="nav">
+        <div class="brand">add<span>esign</span> admin</div>
+        <a class="navlink" href="#dashboard" data-v="dashboard">Dashboard</a>
+        <a class="navlink" href="#uploads" data-v="uploads">Uploads</a>
+        <a class="navlink" href="#pages" data-v="pages">Site pages</a>
+        <a class="navlink" href="#site-settings" data-v="site-settings">Settings</a>
+        <button class="signout" id="signout" style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px">Sign out</button>
+      </nav>
+      <main class="main">
+        <button class="menubtn" id="menubtn">&#9776; Menu</button>
+        <div id="view"></div>
+      </main>
+    </div>`;
+  document.getElementById('menubtn').addEventListener('click', ()=> document.getElementById('nav').classList.toggle('open'));
+  document.getElementById('signout').addEventListener('click', async ()=>{ await api('/api/auth?action=logout',{method:'POST'}); boot(); });
+}
+
+async function renderView(){
+  const v = (location.hash || '#dashboard').slice(1);
+  document.querySelectorAll('.navlink').forEach(a=>a.classList.toggle('active', a.dataset.v===v));
+  document.getElementById('nav').classList.remove('open');
+  const el = document.getElementById('view');
+  el.innerHTML = '<p style="color:var(--muted)">Loading…</p>';
+  try{
+    if(v==='uploads') await viewUploads(el);
+    else if(v==='pages') await viewPages(el);
+    else if(v==='site-settings') await viewSettings(el);
+    else await viewDashboard(el);
+  }catch(e){ el.innerHTML = '<p style="color:var(--red)">' + e.message + '</p>'; }
+}
+
+/* ---------- dashboard ---------- */
+async function viewDashboard(el){
+  currentItems = await api('/api/admin/items');
+  const total = currentItems.length;
+  const pub = currentItems.filter(f=>f.status==='published').length;
+  const pend = currentItems.filter(f=>f.status==='pending').length;
+  const rej = currentItems.filter(f=>f.status==='rejected').length;
+  const recent = [...currentItems].slice(0,6);
+  el.innerHTML = `
+    <div class="pagehead"><h1>Dashboard</h1><p>Everything in your library, at a glance.</p></div>
+    <div class="row">
+      <div class="stat"><div class="n">${total}</div><div class="l">Total items</div></div>
+      <div class="stat"><div class="n">${pub}</div><div class="l">Published</div></div>
+      <div class="stat"><div class="n">${pend}</div><div class="l">Pending</div></div>
+      <div class="stat"><div class="n">${rej}</div><div class="l">Rejected</div></div>
+    </div>
+    <div class="panel"><h3>Recent activity</h3><div class="activity">
+      ${recent.length ? recent.map(f=>`<div class="item"><span>${esc(f.title)} <span class="t">&middot; ${esc(f.catName)}</span></span><span class="badge ${f.status}">${f.status}</span></div>`).join('') : '<div class="item">No items yet &mdash; add your first one under Uploads.</div>'}
+    </div></div>`;
+}
+
+/* ---------- uploads (list + item form) ---------- */
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function viewUploads(el){
+  currentItems = await api('/api/admin/items');
+  el.innerHTML = `
+    <div class="pagehead"><h1>Uploads</h1><p>Add new items or manage what's published to your site.</p></div>
+    <div class="btnrow" style="margin-bottom:18px"><button class="primary" id="newbtn">+ New item</button></div>
+    <div id="formhost"></div>
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="Search by title…" style="max-width:220px">
+      <select id="catfilter"><option value="">All categories</option>${Object.entries(CATS).map(([id,n])=>`<option value="${id}">${n}</option>`).join('')}</select>
+      <select id="statusfilter"><option value="">All statuses</option><option value="published">Published</option><option value="pending">Pending</option><option value="rejected">Rejected</option></select>
+    </div>
+    <div class="panel"><table>
+      <thead><tr><th>Item</th><th>Category</th><th>Added</th><th>Status</th><th></th></tr></thead>
+      <tbody id="filerows"></tbody>
+    </table></div>`;
+  renderFileRows();
+  document.getElementById('search').addEventListener('input', renderFileRows);
+  document.getElementById('catfilter').addEventListener('change', renderFileRows);
+  document.getElementById('statusfilter').addEventListener('change', renderFileRows);
+  document.getElementById('newbtn').addEventListener('click', ()=>openForm(null));
+  document.getElementById('filerows').addEventListener('click', async e=>{
+    const btn = e.target.closest('button'); if(!btn) return;
+    const cat = btn.dataset.cat, id = btn.dataset.id;
+    if(btn.dataset.act==='edit') openForm(currentItems.find(x=>x.cat===cat && x.id===id));
+    if(btn.dataset.act==='publish') await patchItem(cat, id, {status:'published'});
+    if(btn.dataset.act==='unpublish') await patchItem(cat, id, {status:'pending'});
+    if(btn.dataset.act==='delete'){
+      if(!confirm('Delete "' + btn.dataset.title + '"? This removes it from the live site.')) return;
+      await api('/api/admin/item?cat='+cat+'&id='+encodeURIComponent(id), {method:'DELETE'});
+      toast('Deleted'); currentItems = await api('/api/admin/items'); renderFileRows();
+    }
+  });
+}
+async function patchItem(cat, id, patch){
+  await api('/api/admin/item?cat='+cat+'&id='+encodeURIComponent(id), {method:'PATCH', body:JSON.stringify(patch)});
+  toast('Updated'); currentItems = await api('/api/admin/items'); renderFileRows();
+}
+function renderFileRows(){
+  const q = (document.getElementById('search')?.value||'').toLowerCase();
+  const cf = document.getElementById('catfilter')?.value||'';
+  const sf = document.getElementById('statusfilter')?.value||'';
+  const rows = currentItems
+    .filter(f=> f.title.toLowerCase().includes(q) && (!cf||f.cat===cf) && (!sf||f.status===sf))
+    .map(f=>`<tr>
+      <td>${esc(f.title)}</td><td>${esc(f.catName)}</td><td>${esc(f.date)}</td>
+      <td><span class="badge ${f.status}">${f.status}</span></td>
+      <td style="white-space:nowrap;">
+        <button class="iconbtn" data-act="edit" data-cat="${f.cat}" data-id="${f.id}">Edit</button>
+        ${f.status!=='published' ? `<button class="iconbtn" data-act="publish" data-cat="${f.cat}" data-id="${f.id}">Publish</button>`:`<button class="iconbtn" data-act="unpublish" data-cat="${f.cat}" data-id="${f.id}">Unpublish</button>`}
+        <button class="iconbtn" data-act="delete" data-cat="${f.cat}" data-id="${f.id}" data-title="${esc(f.title)}">Delete</button>
+      </td></tr>`).join('');
+  document.getElementById('filerows').innerHTML = rows || `<tr><td colspan="5" style="color:var(--muted);">No items match.</td></tr>`;
+}
+
+function openForm(item){
+  editing = item || null;
+  formImages = item ? JSON.parse(JSON.stringify(item.images||[])) : [];
+  const host = document.getElementById('formhost');
+  host.innerHTML = `
+    <div class="panel" style="padding:20px">
+      <h3 style="padding:0;border:0;margin-bottom:16px">${item ? 'Edit item' : 'New item'}</h3>
+      <div class="grid3">
+        <div class="field"><label>Title *</label><input type="text" id="f-title" value="${esc(item?.title)}"></div>
+        <div class="field"><label>Category *</label><select id="f-cat">${Object.entries(CATS).map(([id,n])=>`<option value="${id}" ${item?.cat===id?'selected':''}>${n}</option>`).join('')}</select></div>
+        <div class="field"><label>Date</label><input type="date" id="f-date" value="${item?.date || new Date().toISOString().slice(0,10)}"></div>
+      </div>
+      <div class="grid3">
+        <div class="field"><label>Tag</label><input type="text" id="f-tag" value="${esc(item?.tag)}" placeholder="e.g. Vector illustration"></div>
+        <div class="field"><label>Price</label><input type="text" id="f-price" value="${esc(item?.price)}" placeholder="$12"></div>
+        <div class="field"><label>Status</label><select id="f-status">
+          <option value="pending" ${item?.status==='pending'?'selected':''}>Pending</option>
+          <option value="published" ${!item || item.status==='published'?'selected':''}>Published</option>
+          <option value="rejected" ${item?.status==='rejected'?'selected':''}>Rejected</option></select></div>
+      </div>
+      <div class="field"><label>Description</label><textarea id="f-desc">${esc(item?.desc)}</textarea></div>
+      <div class="field"><label>Master prompt</label><textarea id="f-prompt" placeholder="The AI prompt behind this set, if any">${esc(item?.prompt)}</textarea></div>
+      <div class="grid3">
+        <div class="field"><label>YouTube tutorial link</label><input type="text" id="f-youtube" value="${esc(item?.youtube)}"></div>
+        <div class="field"><label>Marketplace link</label><input type="text" id="f-link" value="${esc(item?.link)}"></div>
+        <div class="field"><label>Buy link (Gumroad etc.)</label><input type="text" id="f-buy" value="${esc(item?.buy)}"></div>
+      </div>
+      <div class="field"><label>Download link (free file &mdash; Google Drive etc. for big files)</label><input type="text" id="f-download" value="${esc(item?.download)}"></div>
+      <div class="field"><label>Images *</label>
+        <div class="drop" id="drop">Click or drop images here &mdash; resized automatically before upload<input type="file" id="fileinput" accept="image/*" multiple style="display:none"></div>
+        <div class="thumbs" id="thumbs"></div>
+      </div>
+      <div class="btnrow">
+        <button class="primary" id="savebtn">${item ? 'Save changes' : 'Create item'}</button>
+        <button class="secondary" id="cancelbtn">Cancel</button>
+      </div>
+    </div>`;
+  renderThumbs();
+  const drop = document.getElementById('drop'), input = document.getElementById('fileinput');
+  drop.addEventListener('click', ()=>input.click());
+  input.addEventListener('change', e=>handleFiles(e.target.files));
+  drop.addEventListener('dragover', e=>e.preventDefault());
+  drop.addEventListener('drop', e=>{ e.preventDefault(); handleFiles(e.dataTransfer.files); });
+  document.getElementById('cancelbtn').addEventListener('click', ()=>{ host.innerHTML=''; });
+  document.getElementById('savebtn').addEventListener('click', saveForm);
+  host.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function renderThumbs(){
+  document.getElementById('thumbs').innerHTML = formImages.map((im,i)=>
+    `<div class="thumb"><img src="${im.t}"><button data-i="${i}" aria-label="Remove image" title="Remove">&times;</button></div>`).join('');
+  document.querySelectorAll('#thumbs button').forEach(b=>b.addEventListener('click', ()=>{
+    formImages.splice(Number(b.dataset.i), 1); renderThumbs();
+  }));
+}
+
+// Resize in the browser before upload so we stay well under the server's request-size limit.
+function resizeAndEncode(file, maxDim, quality){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = ()=>{
+      img.onerror = reject;
+      img.onload = ()=>{
+        let w = img.width, h = img.height;
+        if(w > maxDim || h > maxDim){
+          if(w >= h){ h = Math.round(h * maxDim / w); w = maxDim; }
+          else { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleFiles(fileList){
+  const files = Array.from(fileList||[]);
+  const cat = document.getElementById('f-cat').value;
+  const id = editing ? editing.id : (document.getElementById('f-title').value || 'item').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') || 'item';
+  for(const file of files){
+    toast('Uploading ' + file.name + '…');
+    try{
+      const dataBase64 = await resizeAndEncode(file, 2200, 0.88);
+      const result = await api('/api/admin/upload', {method:'POST', body: JSON.stringify({cat, id, filename:file.name, dataBase64})});
+      formImages.push(result); renderThumbs();
+    }catch(e){ toast('Failed: ' + e.message); }
+  }
+  toast(files.length + ' image(s) added');
+}
+
+async function saveForm(){
+  const payload = {
+    title: document.getElementById('f-title').value.trim(),
+    cat: document.getElementById('f-cat').value,
+    date: document.getElementById('f-date').value,
+    tag: document.getElementById('f-tag').value.trim(),
+    price: document.getElementById('f-price').value.trim(),
+    status: document.getElementById('f-status').value,
+    desc: document.getElementById('f-desc').value.trim(),
+    prompt: document.getElementById('f-prompt').value.trim(),
+    youtube: document.getElementById('f-youtube').value.trim(),
+    link: document.getElementById('f-link').value.trim(),
+    buy: document.getElementById('f-buy').value.trim(),
+    download: document.getElementById('f-download').value.trim(),
+    images: formImages
+  };
+  if(!payload.title){ toast('Title is required'); return; }
+  if(!payload.images.length){ toast('Add at least one image'); return; }
+  const savebtn = document.getElementById('savebtn'); savebtn.disabled = true;
+  try{
+    if(editing) await api('/api/admin/item?cat='+editing.cat+'&id='+encodeURIComponent(editing.id), {method:'PATCH', body:JSON.stringify(payload)});
+    else { payload.id = editing ? editing.id : undefined; await api('/api/admin/items', {method:'POST', body:JSON.stringify(payload)}); }
+    toast(editing ? 'Saved' : 'Created');
+    document.getElementById('formhost').innerHTML = '';
+    currentItems = await api('/api/admin/items'); renderFileRows();
+  }catch(e){ toast('Error: ' + e.message); }
+  savebtn.disabled = false;
+}
+
+/* ---------- site pages (category visibility) ---------- */
+async function viewPages(el){
+  const data = await api('/api/admin/settings');
+  CATS = data.categories;
+  el.innerHTML = `
+    <div class="pagehead"><h1>Site pages</h1><p>Toggle which sections show on your live site.</p></div>
+    <div class="catgrid">
+      ${Object.entries(CATS).map(([id,name])=>{
+        const count = currentItems.filter ? currentItems.filter(f=>f.cat===id && f.status==='published').length : 0;
+        const on = data.visible[id];
+        return `<div class="cat"><div class="cathead">
+          <div><h4>${name}</h4><div class="l">${count} published item${count===1?'':'s'}</div></div>
+          <label class="switch"><input type="checkbox" data-cat="${id}" ${on?'checked':''}><span class="slider"></span></label>
+        </div></div>`;
+      }).join('')}
+    </div>`;
+  document.querySelectorAll('input[data-cat]').forEach(inp=>{
+    inp.addEventListener('change', async ()=>{
+      await api('/api/admin/settings', {method:'PATCH', body:JSON.stringify({visible:{[inp.dataset.cat]: inp.checked}})});
+      toast(inp.checked ? CATS[inp.dataset.cat]+' is now visible' : CATS[inp.dataset.cat]+' hidden from site');
+    });
+  });
+}
+
+/* ---------- settings ---------- */
+async function viewSettings(el){
+  const data = await api('/api/admin/settings');
+  const s = data.settings || {};
+  el.innerHTML = `
+    <div class="pagehead"><h1>Settings</h1><p>Hero tagline and link-in-bio shown across your site.</p></div>
+    <div class="field"><label>Hero tagline</label><input type="text" id="s-tagline" value="${esc(s.tagline)}"></div>
+    <div class="field"><label>Link-in-bio</label><input type="text" id="s-linktree" value="${esc(s.linktree)}"></div>
+    <button class="primary" id="savebtn">Save changes</button>
+    <p style="color:var(--muted);font-size:13px;margin-top:10px">Note: the homepage hero text is currently static HTML (public/index.html). Wiring it to these settings is a follow-up &mdash; for now this saves the values so they're ready once that's connected.</p>`;
+  document.getElementById('savebtn').addEventListener('click', async ()=>{
+    await api('/api/admin/settings', {method:'PATCH', body:JSON.stringify({settings:{
+      tagline: document.getElementById('s-tagline').value,
+      linktree: document.getElementById('s-linktree').value
+    }})});
+    toast('Settings saved');
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# ===== Ye template hai. Har item folder mein "info.txt" naam se copy karo =====
+# Sirf "title" zaroori hai. Baaki sab optional (khali chor sakte ho).
+# "prompt:" hamesha SABSE LAST mein likho, uske baad jitni lines chaho (multi-line).
+
+title: Neon Tiger Illustration Set
+date: 2026-11-13
+tag: Vector illustration
+desc: Ek line ka description (optional)
+youtube: https://www.youtube.com/watch?v=XXXXXXXXXXX
+link: https://stock.adobe.com/... (marketplace pe is file ka link)
+download: (free file ka link, ya folder mein .zip daal do to khud ban jayega)
+price: $12
+buy: https://yourname.gumroad.com/l/product
+prompt: Yahan apna master prompt likho.
+Agli lines bhi prompt ka hissa hain.

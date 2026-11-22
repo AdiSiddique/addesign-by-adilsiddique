@@ -1,0 +1,6 @@
+title: Premium Template Bundle
+date: 2026-11-10
+tag: Bundle
+price: $12
+buy:
+desc: Sample premium item. Add your Gumroad/Payhip link after "buy:" to show the Buy button.

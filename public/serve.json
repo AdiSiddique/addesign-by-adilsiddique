@@ -1,0 +1,7 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/:cat(illustrations|freepik|adobe-stock|shutterstock|pinterest|clients|premium)", "destination": "/gallery.html" },
+    { "source": "/:cat(illustrations|freepik|adobe-stock|shutterstock|pinterest|clients|premium)/:id", "destination": "/item.html" }
+  ]
+}
